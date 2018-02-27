@@ -40,7 +40,7 @@ class LinearRegression(object):
       # TODO:                                                                 #
       # Update the weights using the gradient and the learning rate.          #
       #########################################################################
-      pass
+      self.W = self.W - learning_rate * grad
       #########################################################################
       #                       END OF YOUR CODE                                #
       #########################################################################
@@ -68,7 +68,7 @@ class LinearRegression(object):
     # TODO:                                                                   #
     # Implement this method. Store the predicted labels in y_pred.            #
     ###########################################################################
-    pass
+    y_pred = np.dot(X, self.W)
     ###########################################################################
     #                           END OF YOUR CODE                              #
     ###########################################################################
@@ -82,7 +82,7 @@ class LinearRegression(object):
     # TODO:                                                                 #
     # Calculate the loss value and gradient matrix with linear_loss_..      #
     #########################################################################
-    loss, grad = None
+    loss, grad = linear_loss_vectorized(self.W, X, y, reg)
     #########################################################################
     #                       END OF YOUR CODE                                #
     #########################################################################

@@ -27,7 +27,20 @@ def linear_loss_naive(W, X, y, reg):
     # here, it is easy to run into numeric instability. Don't forget the        #
     # regularization!                                                           #
     #############################################################################
-    pass
+    N, D = X.shape
+    y_pred = np.zeros((N, 1))
+    for i in range(N):
+        for j in range(D):
+            y_pred[i] += X[i][j] * W[j]
+    for i in range(N):
+        loss += (y_pred[i] - y[i]) ** 2
+    loss = loss / (2*N)
+
+    for i in range(D):
+        for j in range(N):
+            dW[i] += X[j][i] * (y_pred[j] - y[j]) / N
+        dW[i] += reg * W[i]
+
     #############################################################################
     #                          END OF YOUR CODE                                 #
     #############################################################################
@@ -51,7 +64,9 @@ def linear_loss_vectorized(W, X, y, reg):
     # here, it is easy to run into numeric instability. Don't forget the        #
     # regularization!                                                           #
     #############################################################################
-    pass
+    N, D = X.shape
+    loss = 0.5 * np.mean((np.dot(X, W) - y) ** 2)
+    dW = np.dot(X.transpose(), (np.dot(X, W) - y)) / N + reg*W
     #############################################################################
     #                          END OF YOUR CODE                                 #
     #############################################################################
