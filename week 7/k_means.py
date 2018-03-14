@@ -5,7 +5,7 @@ class KMeans(object):
 
   def __init__(self, num_clusters=3):
     self.num_clusters = num_clusters
-    self.centroids = np.random.randn(self.num_clusters)
+    # self.centroids = np.random.randn(self.num_clusters)
 
   def train(self, X, epsilon=1e-12):
     """
@@ -18,22 +18,28 @@ class KMeans(object):
     """
     # save the change of centroids position after updating
     change = np.ones(self.num_clusters)
-
+    # self.centroids = np.random.sample((self.num_clusters, X.shape[-1]))
+    self.centroids = X[np.random.choice(np.arange(len(X)), size = self.num_clusters)]
     while (all(num > epsilon for num in change)):
         #########################################################################
         # TODO:                                                                 #
         # Compute the l2 distance between all test points and all cluster       #
         # centroid then assign them to the nearest centroid.                    #
         #########################################################################
-        pass
+        dists = self.compute_distances_no_loops(X)
+        assignments = self.predict(X)
         #########################################################################
         # TODO:                                                                 #
         # After assigning data to the nearest centroid, recompute the centroids #
         # then calculate the differrent between old centroids and the new one   #
         #########################################################################
         new_centroids = np.zeros(self.centroids.shape)
-        break
-        pass
+        for i in range(new_centroids.shape[0]):
+          new_centroids[i] = np.mean(X[assignments == i], axis= 0)
+        
+        change = np.sqrt(np.sum((new_centroids - self.centroids)**2, axis= 1))
+        
+        self.centroids = new_centroids
         #########################################################################
         #                         END OF YOUR CODE                              #
         #########################################################################
@@ -85,7 +91,7 @@ class KMeans(object):
         # cluster centroid, and store the result in dists[i, j]. You should #
         # not use a loop over dimension.                                    #
         #####################################################################
-        pass
+        dists[i][j] = np.sqrt(np.sum((X[i] - self.centroids[j])**2)) 
         #####################################################################
         #                       END OF YOUR CODE                            #
         #####################################################################
@@ -106,7 +112,7 @@ class KMeans(object):
       # Compute the l2 distance between the ith test point and all cluster  #
       # centroids, and store the result in dists[i, :].                     #
       #######################################################################
-      pass
+      dists[i] = np.sqrt(np.sum((X[i] - self.centroids)**2, axis=1))
       #######################################################################
       #                         END OF YOUR CODE                            #
       #######################################################################
@@ -133,13 +139,13 @@ class KMeans(object):
     # HINT: Try to formulate the l2 distance using matrix multiplication    #
     #       and two broadcast sums.                                         #
     #########################################################################
-    pass
+    dists = np.sqrt(np.sum((np.expand_dims(X, axis = 1) - self.centroids) ** 2, axis=-1))
     #########################################################################
     #                         END OF YOUR CODE                              #
     #########################################################################
     return dists
 
-  def predict_labels(self, dists):
+  def predict_clusters(self, dists):
     """
     Given a matrix of distances between test points and cluster centroids,
     predict a cluster for each test point.
@@ -157,14 +163,13 @@ class KMeans(object):
     for i in range(num_test):
       # A list of length k storing the labels of the k nearest neighbors to
       # the ith test point.
-      closest_y = []
       #########################################################################
       # TODO:                                                                 #
       # Use the distance matrix to find the nearest cluster of the ith        #
       # testing point.                                                        #
       # Hint: Look up the function numpy.argsort.                             #
       #########################################################################
-      pass
+      y_pred[i] = np.argsort(dists[i])[0]
       #########################################################################
       #                           END OF YOUR CODE                            # 
       #########################################################################
